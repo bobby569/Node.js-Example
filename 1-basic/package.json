@@ -1,18 +1,14 @@
 {
-  "name": "notes",
-  "version": "1.0.0",
-  "main": "app.js",
-  "author": "Bobby Zhang",
-  "license": "MIT",
-  "private": true,
-  "scripts": {
-    "start": "nodemon app.js"
-  },
-  "dependencies": {
-    "lodash": "4.17.5",
-    "yargs": "11.0.0"
-  },
-  "devDependencies": {
-    "nodemon": "1.17.2"
-  }
+	"name": "notes",
+	"version": "0.0.1",
+	"main": "app.js",
+	"author": "Bobby Zhang",
+	"license": "MIT",
+	"private": true,
+	"scripts": {
+		"start": "node app.js"
+	},
+	"dependencies": {
+		"yargs": "11.0.0"
+	}
 }

@@ -1,5 +1,5 @@
 const fs = require('fs');
-const FILE = 'notes-data.json';
+const FILE = 'data.json';
 
 const fetchNotes = () => {
 	try {
@@ -10,9 +10,9 @@ const fetchNotes = () => {
 	}
 };
 
-const saveNotes = notes => {
-	fs.writeFileSync(FILE, JSON.stringify(notes));
-};
+const saveNotes = notes => fs.writeFileSync(FILE, JSON.stringify(notes));
+
+const getAll = () => fetchNotes();
 
 const addNote = (title, body) => {
 	const notes = fetchNotes();
@@ -21,16 +21,11 @@ const addNote = (title, body) => {
 	if (duplicate.length > 0) return null;
 
 	const note = { title, body };
-	notes.push(note);
-	saveNotes(notes);
+	saveNotes([...notes, note]);
 	return note;
 };
 
-const getAll = () => {
-	return fetchNotes();
-};
-
-const getNode = title => {
+const getNote = title => {
 	const notes = fetchNotes();
 	const filtered = notes.filter(note => note.title === title);
 	return filtered[0];
@@ -43,4 +38,4 @@ const removeNote = title => {
 	return notes.length - 1 === res.length;
 };
 
-module.exports = { addNote, getAll, getNode, removeNote };
+module.exports = { addNote, getAll, getNote, removeNote };
