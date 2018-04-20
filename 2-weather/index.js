@@ -2,26 +2,26 @@ const yargs = require('yargs');
 const geocode = require('./api/geocode');
 const weather = require('./api/weather');
 
-const { argv } = yargs
+const { address } = yargs
 	.options({
 		address: {
-			demand: true,
 			alias: 'a',
+			demand: true,
 			describe: 'Address to fetch weather for',
 			string: true
 		}
 	})
 	.help()
-	.alias('help', 'h');
+	.alias('help', 'h').argv;
 
 geocode
-	.geocodeAddress(argv.address)
-	.then(res => console.log(res))
+	.geocodeAddress(address)
+	.then(data => {
+		const { lat, lng, addr } = data;
+		weather.getWeather(lat, lng, (err, res) => {
+			if (err) return console.log(err);
+			const { temp, appa } = res;
+			console.log(`${addr}\nIt is ${temp}˚C. It feels like ${appa}˚C.`);
+		});
+	})
 	.catch(err => console.log(err));
-
-weather.getWeather(res.lat, res.lng, (err, res) => {
-	if (err) return console.log(err);
-	console.log(
-		`It is ${res.temperature} ˚F. It feels like ${res.apparentTemperature} ˚F.`
-	);
-});

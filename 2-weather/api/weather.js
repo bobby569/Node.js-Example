@@ -1,25 +1,21 @@
-const request = require('request');
+const axios = require('axios');
+const { weatherAPIKey } = require('../key');
 const weatherBaseUrl = 'https://api.darksky.net/forecast';
-const weatherAPIKey = 'd06b1b688eafe0000549b048e1885017';
+
+Number.prototype.F2C = function() {
+	return ~~((this - 32) / 1.8);
+};
 
 const getWeather = (lat, lng, callback) => {
-	request(
-		{
-			url: `${weatherBaseUrl}/${weatherAPIKey}/${lat},${lng}`,
-			json: true
-		},
-		(err, res, body) => {
-			if (err || res.statusCode !== 200) {
-				callback('Unable to connect to fetch whether');
-			} else {
-				const { temperature, apparentTemperature } = body.currently;
-				callback(null, {
-					temperature,
-					apparentTemperature
-				});
-			}
-		}
-	);
+	axios
+		.get(`${weatherBaseUrl}/${weatherAPIKey}/${lat},${lng}`)
+		.then(res => {
+			const { temperature, apparentTemperature } = res.data.currently;
+			const temp = temperature.F2C();
+			const appa = apparentTemperature.F2C();
+			callback(null, { temp, appa });
+		})
+		.catch(err => callback(err));
 };
 
 module.exports = { getWeather };
