@@ -9,7 +9,7 @@ mongoose.connect('mongodb://localhost/graphql');
 const app = express();
 app.use(bodyParser.json());
 
-// Development purpose
+// For development purpose
 app.use(
 	'/graphiql',
 	graphiqlExpress({
