@@ -1,7 +1,7 @@
 const request = require('supertest');
 const express = require('express');
 
-const app = require('./server').app;
+const { app } = require('./server');
 
 it('Expect hello world', done => {
 	request(app)
