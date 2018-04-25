@@ -14,11 +14,11 @@
 	},
 	"engines": {
 		"node": "8.11.1",
-		"yarn": "1.5.1"
+		"yarn": "1.6.0"
 	},
 	"scripts": {
-		"start": "nodemon server/server.js",
-		"test": "jest",
-		"jest": "jest --watch"
+		"start": "node server/server.js",
+		"jest": "jest",
+		"jest:w": "jest --watch"
 	}
 }

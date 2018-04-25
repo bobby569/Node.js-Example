@@ -2,7 +2,7 @@
 
 #### Highlight
 
-* Express.js
+* [Express.js](https://expressjs.com/)
 * [Handlebars.js](https://github.com/wycats/handlebars.js)
 * Logging system
 
