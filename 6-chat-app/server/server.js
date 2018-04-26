@@ -1,68 +1,67 @@
 const path = require('path');
-const http = require('http');
 const express = require('express');
-const socketIO = require('socket.io');
-const { generateMessage, generateLocationMessage } = require('./util/message');
-const { isRealString } = require('./util/validation');
+const { genMsg, genLocMsg } = require('./util/message');
+const { isValidString } = require('./util/validation');
 const { Users } = require('./util/users');
 
 const PATH = path.join(__dirname, '../public');
 const PORT = process.env.PORT || 3000;
 
 const app = express();
-const server = http.createServer(app);
-const io = socketIO(server);
+const server = require('http').Server(app);
+const io = require('socket.io')(server);
 const users = new Users();
 
 app.use(express.static(PATH));
 
 io.on('connection', socket => {
-	console.log('New User connected');
-
+	// New user connected
 	socket.on('join', (params, callback) => {
-		if (!isRealString(params.name) || !isRealString(params.room)) {
-			return callback('Name and room are required');
+		const { name, room } = params;
+		if (!isValidString(name) || !isValidString(room)) {
+			return callback('Name or room is invalid!');
 		}
-		socket.join(params.room);
+		// Join room
+		socket.join(room);
+		// Remove from other room
 		users.removeUser(socket.id);
-		users.addUser(socket.id, params.name, params.room);
-
-		io.to(params.room).emit('updateUserList', users.getUserList(params.room));
-
-		socket.emit(
-			'newMessage',
-			generateMessage('Admin', 'Welcome to the chat app')
-		);
-
+		// Add user to current room
+		users.addUser(socket.id, name, room);
+		// Broadcast to everyone in the room and update user list
+		io.to(room).emit('updateUserList', users.getUserList(room));
+		// Greeting message
+		socket.emit('newMessage', genMsg('admin', 'Welcome to the chat app'));
+		// Let others in the same room know someone has joined
 		socket.broadcast
-			.to(params.room)
-			.emit(
-				'newMessage',
-				generateMessage('Admin', `${params.name} has joined`)
-			);
-
+			.to(room)
+			.emit('newMessage', genMsg('admin', `${name} has joined`));
+		// done
 		callback();
 	});
 
 	socket.on('createMessage', (message, callback) => {
+		// Get user
 		const user = users.getUser(socket.id);
-		if (user && isRealString(message.text)) {
-			io
-				.to(user.room)
-				.emit('newMessage', generateMessage(user.name, message.text));
+		// Validation
+		if (user && isValidString(message.text)) {
+			// Send message to the room
+			io.to(user.room).emit('newMessage', genMsg(user.name, message.text));
 		}
+		// done
 		callback();
 	});
 
 	socket.on('createLocationMessage', coords => {
+		// Get lat and lng
+		const { latitude, longitude } = coords;
+		// Get user
 		const user = users.getUser(socket.id);
+		// Validation
 		if (user) {
+			// Send location info to the room
 			io
 				.to(user.room)
-				.emit(
-					'newLocationMessage',
-					generateLocationMessage(user.name, coords.latitude, coords.longitude)
-				);
+				.emit('newLocationMessage', genLocMsg(user.name, latitude, longitude));
 		}
 	});
 
@@ -70,10 +69,11 @@ io.on('connection', socket => {
 		const user = users.removeUser(socket.id);
 
 		if (user) {
-			io.to(user.room).emit('updateUserList', users.getUserList(user.room));
-			io
-				.to(user.room)
-				.emit('newMessage', generateMessage('Admin', `${user.name} has left`));
+			const { room, name } = user;
+			// Update user list
+			io.to(room).emit('updateUserList', users.getUserList(room));
+			// Send location info to the room
+			io.to(room).emit('newMessage', genMsg('admin', `${name} has left`));
 		}
 	});
 });

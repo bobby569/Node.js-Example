@@ -20,93 +20,67 @@ function scrollToBottom() {
 }
 
 socket.on('connect', () => {
-	console.log('Connected to server');
+	// Connected to server
 	const params = $.deparam(window.location.search);
-	socket.emit('join', params, function(err) {
+	socket.emit('join', params, err => {
 		if (err) {
 			alert(err);
 			window.location.href = '/';
-		} else {
-			console.log('No error');
 		}
 	});
 });
 
-socket.on('disconnect', () => {
-	console.log('Disconnected from server');
-});
-
-socket.on('updateUserList', function(users) {
+socket.on('updateUserList', users => {
 	var ol = $('<ol></ol>');
 
-	users.forEach(function(user) {
-		ol.append($('<li></li>').text(user));
-	});
+	users.forEach(user => ol.append($('<li></li>').text(user)));
 
 	$('#users').html(ol);
 });
 
 socket.on('newMessage', data => {
-	const formattedTime = moment(data.createdAt).format('h:mm a');
 	const template = $('#message-template').html();
-	const html = Mustache.render(template, {
-		from: data.from,
-		text: data.text,
-		time: formattedTime
-	});
+	const { from, text } = data;
+	const time = moment(data.createdAt).format('h:mm a');
+	const html = Mustache.render(template, { from, text, time });
 
 	$('#messages').append(html);
 	scrollToBottom();
 });
 
-socket.on('newLocationMessage', function(data) {
-	const formattedTime = moment(data.createdAt).format('h:mm a');
+socket.on('newLocationMessage', data => {
 	const template = $('#location-template').html();
-	const html = Mustache.render(template, {
-		from: data.from,
-		url: data.url,
-		time: formattedTime
-	});
+	const { from, url } = data;
+	const time = moment(data.createdAt).format('h:mm a');
+	const html = Mustache.render(template, { from, url, time });
 
 	$('#messages').append(html);
 	scrollToBottom();
 });
 
-$('#message-form').on('submit', function(e) {
+$('#message-form').on('submit', e => {
 	e.preventDefault();
 
-	const messageTextbox = $('[name=message]');
-
-	socket.emit(
-		'createMessage',
-		{
-			text: messageTextbox.val()
-		},
-		function() {
-			messageTextbox.val('');
-		}
-	);
+	const msgTextbox = $('[name=message]');
+	const text = msgTextbox.val();
+	socket.emit('createMessage', { text }, () => msgTextbox.val(''));
 });
 
-const locationButton = $('#send-location');
+const locButton = $('#send-location');
 
-locationButton.on('click', function() {
-	if (!navigator.geolocation) {
-		return alert('Geolocation not supported');
-	}
+locButton.on('click', () => {
+	if (!navigator.geolocation) return alert('Geolocation not supported');
 
-	locationButton.attr('disabled', 'disabled').text('Sending location ...');
+	locButton.attr('disabled', 'disabled').text('Sending location ...');
 
 	navigator.geolocation.getCurrentPosition(
-		function(posi) {
-			locationButton.removeAttr('disabled').text('Send Location');
-			socket.emit('createLocationMessage', {
-				latitude: posi.coords.latitude,
-				longitude: posi.coords.longitude
-			});
+		posi => {
+			locButton.removeAttr('disabled').text('Send Location');
+			const { latitude, longitude } = posi.coords;
+			socket.emit('createLocationMessage', { latitude, longitude });
 		},
-		function() {
-			locationButton.removeAttr('disabled');
+		() => {
+			locButton.removeAttr('disabled');
 			alert('Unable to fetch location');
 		}
 	);

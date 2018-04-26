@@ -1,4 +1,4 @@
-const { Users } = require('./users');
+const { Users } = require('../util/users');
 
 describe('Users', () => {
 	let obj;
@@ -24,6 +24,17 @@ describe('Users', () => {
 		];
 	});
 
+	test('getUser', () => {
+		expect(obj.getUser('1').id).toBe('1');
+		expect(obj.getUser('99')).toBe(undefined);
+	});
+
+	test('getUserList', () => {
+		expect(obj.getUserList('Node')).toEqual(['Mike', 'Jen']);
+		expect(obj.getUserList('React')).toEqual(['Julie']);
+		expect(obj.getUserList('Fortran')).toEqual([]);
+	});
+
 	test('addUser', () => {
 		const obj = new Users();
 		const user = {
@@ -31,8 +42,7 @@ describe('Users', () => {
 			name: 'Mike',
 			room: 'Node'
 		};
-		const resUser = obj.addUser(user.id, user.name, user.room);
-
+		obj.addUser(user.id, user.name, user.room);
 		expect(obj.users).toEqual([user]);
 	});
 
@@ -44,17 +54,5 @@ describe('Users', () => {
 		const user1 = obj.removeUser('1');
 		expect(user1.id).toBe('1');
 		expect(obj.users.length).toBe(2);
-	});
-
-	test('getUser', () => {
-		const user1 = obj.getUser('1');
-		expect(user1.id).toBe('1');
-		const user2 = obj.getUser('99');
-		expect(user2).toBe(undefined);
-	});
-
-	test('getUserList', () => {
-		expect(obj.getUserList('Node')).toEqual(['Mike', 'Jen']);
-		expect(obj.getUserList('React')).toEqual(['Julie']);
 	});
 });

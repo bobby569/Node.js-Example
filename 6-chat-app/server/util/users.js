@@ -1,11 +1,15 @@
-// addUser(id, name, room)
-// removeUser(id)
-// getUser(id)
-// getUserList(room)
-
 class Users {
 	constructor() {
 		this.users = [];
+	}
+
+	getUser(id) {
+		return this.users.filter(user => user.id === id)[0];
+	}
+
+	getUserList(room) {
+		const users = this.users.filter(user => user.room === room);
+		return users.map(user => user.name);
 	}
 
 	addUser(id, name, room) {
@@ -16,21 +20,8 @@ class Users {
 
 	removeUser(id) {
 		const user = this.getUser(id);
-		if (user) {
-			this.users = this.users.filter(user => user.id !== id);
-		}
+		if (user) this.users = this.users.filter(user => user.id !== id);
 		return user;
-	}
-
-	getUser(id) {
-		return this.users.filter(user => user.id === id)[0];
-	}
-
-	getUserList(room) {
-		const users = this.users.filter(user => user.room === room);
-		const namesArr = users.map(user => user.name);
-
-		return namesArr;
 	}
 }
 
