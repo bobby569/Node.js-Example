@@ -1,16 +1,13 @@
-### Testing
+### Redis
 
 #### Highlight
 
-* [jest](https://facebook.github.io/jest/)
-* async testing
-* [supertest](https://github.com/visionmedia/supertest)
-* [rewire](https://github.com/jhnns/rewire)
+* [Redis](https://redis.io/)
+* [Redis JS Driver](http://redis.js.org/)
 
 #### Usage
 
 ```bash
 $ yarn  # install the dependencies
-$ yarn jest # run jest
-$ yarn jest:w  # run jest with watching mode
+$ yarn start # run the app
 ```

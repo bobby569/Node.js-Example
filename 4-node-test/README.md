@@ -11,6 +11,7 @@
 
 ```bash
 $ yarn  # install the dependencies
+$ yarn start  # start the server
 $ yarn jest # run jest
 $ yarn jest:w  # run jest with watching mode
 ```

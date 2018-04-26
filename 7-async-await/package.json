@@ -6,10 +6,7 @@
 	"dependencies": {
 		"axios": "^0.18.0"
 	},
-	"devDependencies": {
-		"nodemon": "^1.17.1"
-	},
 	"scripts": {
-		"start": "nodemon currency-converter.js"
+		"start": "node currency-converter.js"
 	}
 }

@@ -1,16 +1,15 @@
-### Testing
+### GraphQL
 
 #### Highlight
 
-* [jest](https://facebook.github.io/jest/)
-* async testing
-* [supertest](https://github.com/visionmedia/supertest)
-* [rewire](https://github.com/jhnns/rewire)
+* [mongoose](http://mongoosejs.com/)
+* [Apollo](https://www.apollographql.com/)
+* [GraphQL](https://graphql.org/)
+* [Babel](https://babeljs.io/)
 
 #### Usage
 
 ```bash
 $ yarn  # install the dependencies
-$ yarn jest # run jest
-$ yarn jest:w  # run jest with watching mode
+$ yarn start # run the app
 ```

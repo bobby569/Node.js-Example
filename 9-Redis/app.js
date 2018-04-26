@@ -1,26 +1,20 @@
-const path = require('path');
-const redis = require('redis');
-const express = require('express');
-const exphbs = require('express-handlebars');
 const bodyParser = require('body-parser');
-const methodOverride = require('method-override');
 
-const client = redis.createClient({ password: 'bobby' });
-client.on('connect', () => console.log('connected to redis'));
-const port = 3000;
-const app = express();
+const app = require('express')();
+const client = require('redis').createClient();
+client.on('connect', () => console.log('Redis connected'));
 
-app.engine('handlebars', exphbs({ defaultLayout: 'main' }));
+app.engine(
+	'handlebars',
+	require('express-handlebars')({ defaultLayout: 'main' })
+);
 app.set('view engine', 'handlebars');
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
+app.use(require('method-override')('_method'));
 
-app.use(methodOverride('_method'));
-
-app.get('/', (req, res) => {
-	res.render('searchusers');
-});
+app.get('/', (req, res) => res.render('searchusers'));
 
 app.post('/user/search', (req, res) => {
 	const { id } = req.body;
@@ -37,9 +31,7 @@ app.post('/user/search', (req, res) => {
 	});
 });
 
-app.get('/user/add', (req, res) => {
-	res.render('adduser');
-});
+app.get('/user/add', (req, res) => res.render('adduser'));
 
 app.post('/user/add', (req, res) => {
 	const { id, first_name, last_name, email, phone } = req.body;
@@ -67,4 +59,4 @@ app.delete('/user/delete/:id', (req, res) => {
 	res.redirect('/');
 });
 
-app.listen(port, () => console.log(`Server up on ${port}`));
+app.listen(3000, () => console.log(`Server up on 3000`));
