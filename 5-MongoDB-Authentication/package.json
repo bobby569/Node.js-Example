@@ -19,11 +19,11 @@
 		"supertest": "^3.0.0"
 	},
 	"scripts": {
-		"start": "node server/server.js",
+		"start": "nodemon server/server.js",
 		"jest": "export NODE_ENV=test || SET \"NODE_ENV=test\" && jest",
 		"jest:watch": "jest --watch"
 	},
 	"engines": {
-		"node": "8.11.1"
+		"node": "8.11.2"
 	}
 }
