@@ -24,10 +24,10 @@ const users = [
 		_id: userOneId,
 		email: 'test1@example.com',
 		password: 'userOnePass',
-		token: [
+		tokens: [
 			{
 				access: 'auth',
-				token: jwt.sign({ _id: userOneId, access: 'auth' }, 'secret').toString() // Not working
+				token: jwt.sign({ _id: userOneId, access: 'auth' }, 'secret').toString()
 			}
 		]
 	},
